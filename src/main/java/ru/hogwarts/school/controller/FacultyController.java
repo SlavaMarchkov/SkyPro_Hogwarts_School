@@ -14,16 +14,16 @@ import java.util.Collections;
 @RequestMapping(path = "/faculty")
 public class FacultyController {
 
-    private final FacultyService service;
+    private final FacultyService facultyService;
 
     @Autowired
-    public FacultyController(FacultyService service) {
-        this.service = service;
+    public FacultyController(final FacultyService facultyService) {
+        this.facultyService = facultyService;
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<Faculty> get(@PathVariable(value = "id") Long id) {
-        Faculty foundFaculty = service.read(id);
+    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable(value = "id") Long id) {
+        Faculty foundFaculty = facultyService.findFaculty(id);
         if (foundFaculty == null) {
             return ResponseEntity.notFound().build();
         }
@@ -31,13 +31,15 @@ public class FacultyController {
     }
 
     @PostMapping
-    public Faculty add(@RequestBody Faculty faculty) {
-        return service.create(faculty);
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.addFaculty(faculty);
     }
 
-    @PutMapping
-    public ResponseEntity<Faculty> update(@RequestBody Faculty faculty) {
-        Faculty foundFaculty = service.update(faculty);
+    @PutMapping(path = "{id}")
+    public ResponseEntity<Faculty> editFaculty(@PathVariable(value = "id") Long id,
+                                               @RequestBody Faculty faculty
+    ) {
+        Faculty foundFaculty = facultyService.editFaculty(id, faculty);
         if (foundFaculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -45,15 +47,15 @@ public class FacultyController {
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> deleteFaculty(@PathVariable(value = "id") Long id) {
+        facultyService.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<Collection<Faculty>> filterByColor(@RequestParam(required = false) String color) {
         if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(service.filterByColor(color));
+            return ResponseEntity.ok(facultyService.filterByColor(color));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
