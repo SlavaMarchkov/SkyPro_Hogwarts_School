@@ -16,7 +16,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student addStudent(Student student) {
-        student.setId(count++);
+        student.setId(++count);
         students.put(student.getId(), student);
         return student;
     }
@@ -35,8 +35,8 @@ public class StudentServiceImpl implements StudentService {
         return student;
     }
 
-    public void deleteStudent(long id) {
-        students.remove(id);
+    public Student deleteStudent(long id) {
+        return students.remove(id);
     }
 
     public Collection<Student> filterByAge(int age) {
@@ -47,6 +47,16 @@ public class StudentServiceImpl implements StudentService {
             }
         }
         return filteredStudents;
+    }
+
+    @Override
+    public Collection<Student> getAll() {
+        return new ArrayList<>(students.values());
+    }
+
+    @Override
+    public int size() {
+        return students.size();
     }
 
 }
