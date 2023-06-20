@@ -16,7 +16,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty addFaculty(Faculty faculty) {
-        faculty.setId(count++);
+        faculty.setId(++count);
         faculties.put(faculty.getId(), faculty);
         return faculty;
     }
@@ -36,8 +36,8 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public void deleteFaculty(long id) {
-        faculties.remove(id);
+    public Faculty deleteFaculty(long id) {
+        return faculties.remove(id);
     }
 
     public Collection<Faculty> filterByColor(String color) {
@@ -48,6 +48,16 @@ public class FacultyServiceImpl implements FacultyService {
             }
         }
         return filteredFaculties;
+    }
+
+    @Override
+    public Collection<Faculty> getAll() {
+        return new ArrayList<>(faculties.values());
+    }
+
+    @Override
+    public int size() {
+        return faculties.size();
     }
 
 }

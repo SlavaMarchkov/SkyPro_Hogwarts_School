@@ -12,8 +12,12 @@ public interface StudentService {
 
     Student editStudent(long id, Student student);
 
-    void deleteStudent(long id);
+    Student deleteStudent(long id);
 
     Collection<Student> filterByAge(int age);
+
+    Collection<Student> getAll();
+
+    int size();
 
 }
