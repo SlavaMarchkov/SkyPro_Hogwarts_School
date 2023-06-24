@@ -1,101 +1,106 @@
 package ru.hogwarts.school.service;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.impl.FacultyServiceImpl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {
 
-    private FacultyService service;
+    @Mock
+    private FacultyRepository repositoryMock;
 
-    @BeforeEach
-    void setUp() {
-        this.service = new FacultyServiceImpl();
-        service.addFaculty(new Faculty(1, "Faculty 1", "green"));
-        service.addFaculty(new Faculty(2, "Faculty 2", "red"));
-        service.addFaculty(new Faculty(3, "Faculty 3", "brown"));
-        service.addFaculty(new Faculty(4, "Faculty 4", "yellow"));
-    }
-
-    @AfterEach
-    void tearDown() {
-        new ArrayList<>(service.getAll())
-                .forEach((faculty -> service.deleteFaculty(faculty.getId())));
-    }
+    @InjectMocks
+    private FacultyServiceImpl service;
 
     @Test
-    void addFacultyTest() {
-        int size = service.size();
-        Faculty newFaculty = new Faculty(5, "New Faculty", "black");
-        assertEquals(newFaculty, service.addFaculty(newFaculty));
-        assertEquals(service.getAll().size(), size + 1);
+    void shouldAddFacultyTest() {
+        Faculty newFaculty = new Faculty(1, "Faculty 1", "green");
+        when(repositoryMock.save(newFaculty))
+                .thenReturn(newFaculty);
+        Faculty actual = service.addFaculty(newFaculty);
+        Faculty expected = new Faculty(1, "Faculty 1", "green");
+        assertThat(actual)
+                .isEqualTo(expected);
+        verify(repositoryMock, times(1)).save(expected);
     }
 
     @Test
     void findFacultyPositiveTest() {
-        Faculty found = new Faculty(2, "Faculty 2", "red");
+        Faculty found = new Faculty(2, "Faculty 2", "green");
+        when(repositoryMock.findById(2L)).thenReturn(Optional.of(found));
         assertEquals(service.findFaculty(2), found);
     }
 
     @Test
     void findFacultyNegativeTest() {
-        int size = service.size();
-        assertNull(service.findFaculty(size + 1));
+        when(repositoryMock.findById(3L)).thenReturn(Optional.empty());
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> service.findFaculty(3));
     }
 
     @Test
     void editFacultyPositiveTest() {
-        Faculty faculty = new Faculty(2, "Faculty 2", "black");
-        int size = service.size();
-        assertEquals(service.editFaculty(2, faculty), faculty);
-        assertEquals(service.getAll().size(), size);
+        Faculty Faculty = new Faculty(2, "Faculty 2", "green");
+        when(repositoryMock.save(Faculty))
+                .thenReturn(Faculty);
+        Faculty actual = service.editFaculty(Faculty.getId(), Faculty);
+        Faculty expected = new Faculty(2, "Faculty 2", "green");
+        assertThat(actual)
+                .isEqualTo(expected);
+        verify(repositoryMock, times(1)).save(expected);
     }
 
     @Test
     void editFacultyNegativeTest() {
-        Faculty faculty = new Faculty(5, "New Faculty", "black");
-        int size = service.size();
-        assertNull(service.editFaculty(5, faculty));
-        assertEquals(service.getAll().size(), size);
+        Faculty faculty1 = new Faculty(2, "Faculty 2", "green");
+        Faculty faculty2 = new Faculty(5, "Faculty 5", "red");
+        assertThat(faculty1)
+                .isNotEqualTo(faculty2);
+        verify(repositoryMock, never()).save(faculty1);
     }
 
     @Test
-    void deleteFacultyPositiveTest() {
-        int size = service.size();
-        Faculty faculty = new Faculty(1, "Faculty 1", "green");
-        assertEquals(faculty, service.deleteFaculty(1));
-        assertEquals(service.getAll().size(), size - 1);
+    void deleteFacultyTest() {
+        service.deleteFaculty(1);
+        verify(repositoryMock, times(1)).deleteById(1L);
     }
 
     @Test
-    void deleteFacultyNegativeTest() {
-        int size = service.size();
-        assertNull(service.deleteFaculty(size + 1));
-        assertEquals(service.getAll().size(), size);
+    void findByColorPositiveTest() {
+        Faculty faculty1 = new Faculty(1, "Faculty 1", "green");
+        Faculty faculty2 = new Faculty(2, "Faculty 2", "green");
+        when(repositoryMock.findByColorLike("green")).thenReturn(
+                List.of(faculty1, faculty2)
+        );
+        when(repositoryMock.findAll()).thenReturn(
+                List.of(faculty1, faculty2)
+        );
+        assertThat(service.getAll()).isEqualTo(service.findByColor("green"));
+        verify(repositoryMock, times(1)).findByColorLike("green");
     }
 
     @Test
-    void filterByColorPositiveTest() {
-        Faculty newGreenFaculty = new Faculty(5, "Green Faculty", "green");
-        Faculty anotherGreenFaculty = new Faculty(6, "Another Green Faculty", "green");
-        service.addFaculty(newGreenFaculty);
-        service.addFaculty(anotherGreenFaculty);
-        List<Faculty> faculties = List.of(service.findFaculty(1), newGreenFaculty, anotherGreenFaculty);
-        assertIterableEquals(faculties, service.filterByColor("green"));
-    }
-
-    @Test
-    void filterByColorNegativeTest() {
-        List<Faculty> faculties = Collections.emptyList();
-        assertIterableEquals(faculties, service.filterByColor("blue"));
+    void findByColorNegativeTest() {
+        when(repositoryMock.findByColorLike("green"))
+                .thenReturn(emptyList());
+        assertThat(service.findByColor("green")).isEmpty();
+        verify(repositoryMock, times(1)).findByColorLike("green");
     }
 
 }

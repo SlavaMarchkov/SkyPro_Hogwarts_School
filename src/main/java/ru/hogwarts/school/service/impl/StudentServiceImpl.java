@@ -1,62 +1,56 @@
 package ru.hogwarts.school.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final HashMap<Long, Student> students = new HashMap<>();
-    private long count = 0;
+    private final StudentRepository studentRepository;
+
+    @Autowired
+    public StudentServiceImpl(final StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public Student addStudent(Student student) {
-        student.setId(++count);
-        students.put(student.getId(), student);
-        return student;
+        return studentRepository.save(student);
     }
 
     @Override
     public Student findStudent(long id) {
-        return students.get(id);
+        return studentRepository.findById(id).get();
     }
 
     @Override
     public Student editStudent(long id, Student student) {
-        if (!students.containsKey(id)) {
-            return null;
-        }
-        students.put(id, student);
-        return student;
+        return studentRepository.save(student);
     }
 
-    public Student deleteStudent(long id) {
-        return students.remove(id);
+    @Override
+    public void deleteStudent(long id) {
+        studentRepository.deleteById(id);
     }
 
-    public Collection<Student> filterByAge(int age) {
-        ArrayList<Student> filteredStudents = new ArrayList<>();
-        for (Student student : students.values()) {
-            if (student.getAge() == age) {
-                filteredStudents.add(student);
-            }
-        }
-        return filteredStudents;
+    @Override
+    public Collection<Student> findByAge(int age) {
+        return studentRepository.findByAge(age);
     }
 
     @Override
     public Collection<Student> getAll() {
-        return new ArrayList<>(students.values());
+        return studentRepository.findAll();
     }
 
     @Override
     public int size() {
-        return students.size();
+        return getAll().size();
     }
 
 }

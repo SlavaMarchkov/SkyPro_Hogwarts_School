@@ -52,9 +52,9 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> filterByAge(@RequestParam(required = false) Integer age) {
+    public ResponseEntity<Collection<Student>> findByAge(@RequestParam(required = false) Integer age) {
         if (age != null && age > 0) {
-            return ResponseEntity.ok(studentService.filterByAge(age));
+            return ResponseEntity.ok(studentService.findByAge(age));
         }
         return ResponseEntity.ok(studentService.getAll());
     }
