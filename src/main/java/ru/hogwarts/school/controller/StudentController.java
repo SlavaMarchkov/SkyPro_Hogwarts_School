@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -47,6 +48,10 @@ public class StudentController {
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable(value = "id") Long id) {
+        Student student = studentService.findStudent(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
@@ -63,6 +68,15 @@ public class StudentController {
             return ResponseEntity.ok(studentService.findByAgeBetween(minAge, maxAge));
         }
         return ResponseEntity.ok(studentService.getAll());
+    }
+
+    @GetMapping(path = "faculty/{id}")
+    public ResponseEntity<Faculty> getFacultyForStudent(@PathVariable(value = "id") Long id) {
+        Faculty faculty = studentService.getFacultyForStudent(id);
+        if (faculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(faculty);
     }
 
 }

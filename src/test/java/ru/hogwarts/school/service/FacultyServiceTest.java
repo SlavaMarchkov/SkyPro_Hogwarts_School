@@ -10,13 +10,12 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.impl.FacultyServiceImpl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,8 +49,7 @@ class FacultyServiceTest {
     @Test
     void findFacultyNegativeTest() {
         when(repositoryMock.findById(3L)).thenReturn(Optional.empty());
-        assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> service.findFaculty(3));
+        assertNull(service.findFaculty(3));
     }
 
     @Test
