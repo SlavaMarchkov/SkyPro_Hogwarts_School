@@ -44,6 +44,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Collection<Student> findByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    @Override
     public Collection<Student> getAll() {
         return studentRepository.findAll();
     }
