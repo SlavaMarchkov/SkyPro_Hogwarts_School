@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -47,16 +48,35 @@ public class StudentController {
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable(value = "id") Long id) {
+        Student student = studentService.findStudent(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> findByAge(@RequestParam(required = false) Integer age) {
+    public ResponseEntity<Collection<Student>> getStudents(@RequestParam(required = false) Integer age,
+                                                           @RequestParam(required = false) Integer minAge,
+                                                           @RequestParam(required = false) Integer maxAge
+    ) {
         if (age != null && age > 0) {
             return ResponseEntity.ok(studentService.findByAge(age));
         }
+        if ((minAge != null && minAge > 0) && (maxAge != null && maxAge > 0 && maxAge > minAge)) {
+            return ResponseEntity.ok(studentService.findByAgeBetween(minAge, maxAge));
+        }
         return ResponseEntity.ok(studentService.getAll());
+    }
+
+    @GetMapping(path = "faculty/{id}")
+    public ResponseEntity<Faculty> getFacultyForStudent(@PathVariable(value = "id") Long id) {
+        Faculty faculty = studentService.getFacultyForStudent(id);
+        if (faculty == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(faculty);
     }
 
 }

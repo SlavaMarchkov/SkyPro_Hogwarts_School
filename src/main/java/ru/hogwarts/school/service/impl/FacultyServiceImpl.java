@@ -3,10 +3,13 @@ package ru.hogwarts.school.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -26,7 +29,8 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty findFaculty(long id) {
-        return facultyRepository.findById(id).get();
+        Optional<Faculty> foundFaculty = facultyRepository.findById(id);
+        return foundFaculty.orElse(null);
     }
 
     @Override
@@ -45,6 +49,11 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
+    public Collection<Faculty> findByNameOrColor(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    @Override
     public Collection<Faculty> getAll() {
         return facultyRepository.findAll();
     }
@@ -52,6 +61,15 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public int size() {
         return getAll().size();
+    }
+
+    @Override
+    public Collection<Student> getFacultyStudents(Long id) {
+        Optional<Faculty> foundFaculty = Optional.ofNullable(findFaculty(id));
+        if (foundFaculty.isPresent()) {
+            return foundFaculty.get().getStudents();
+        }
+        return Collections.emptyList();
     }
 
 }

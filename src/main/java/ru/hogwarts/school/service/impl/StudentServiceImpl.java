@@ -2,11 +2,13 @@ package ru.hogwarts.school.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -25,7 +27,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student findStudent(long id) {
-        return studentRepository.findById(id).get();
+        Optional<Student> foundStudent = studentRepository.findById(id);
+        return foundStudent.orElse(null);
     }
 
     @Override
@@ -44,6 +47,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Collection<Student> findByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    @Override
     public Collection<Student> getAll() {
         return studentRepository.findAll();
     }
@@ -51,6 +59,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int size() {
         return getAll().size();
+    }
+
+    @Override
+    public Faculty getFacultyForStudent(Long id) {
+        Optional<Student> foundStudent = Optional.ofNullable(findStudent(id));
+        return foundStudent.map(Student::getFaculty).orElse(null);
     }
 
 }
