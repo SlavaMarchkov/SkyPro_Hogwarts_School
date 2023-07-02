@@ -1,37 +1,22 @@
-package ru.hogwarts.school.model;
+package ru.hogwarts.school.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Collection;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "faculties")
 public class Faculty {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;
     private String color;
 
     @OneToMany(mappedBy = "faculty")
-    @JsonIgnore
-    private Collection<Student> students;
-
-    public Faculty() {
-
-    }
-
-    public Faculty(long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
+    private List<Student> students;
 
     public long getId() {
         return id;
@@ -57,6 +42,14 @@ public class Faculty {
         this.color = color;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,11 +72,4 @@ public class Faculty {
                 '}';
     }
 
-    public Collection<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Collection<Student> students) {
-        this.students = students;
-    }
 }

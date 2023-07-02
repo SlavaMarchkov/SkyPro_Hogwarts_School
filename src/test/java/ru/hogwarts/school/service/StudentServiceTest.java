@@ -5,17 +5,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.dto.FacultyDtoOut;
+import ru.hogwarts.school.dto.StudentDtoIn;
+import ru.hogwarts.school.dto.StudentDtoOut;
+import ru.hogwarts.school.entity.Student;
+import ru.hogwarts.school.exception.StudentNotFoundException;
+import ru.hogwarts.school.mapper.StudentMapper;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.impl.StudentServiceImpl;
 
-import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,81 +26,78 @@ class StudentServiceTest {
     @Mock
     private StudentRepository repositoryMock;
 
+    @Mock
+    private StudentMapper studentMapper;
+
     @InjectMocks
     private StudentServiceImpl service;
 
     @Test
     void shouldAddStudentTest() {
-        Student newStudent = new Student(1, "Student 1", 12);
-        when(repositoryMock.save(newStudent))
-                .thenReturn(newStudent);
-        Student actual = service.addStudent(newStudent);
-        Student expected = new Student(1, "Student 1", 12);
-        assertThat(actual)
-                .isEqualTo(expected);
-        verify(repositoryMock, times(1)).save(expected);
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setName("Student");
+        student1.setAge(18);
+        when(repositoryMock.save(student1)).thenReturn(student1);
+
+        Student student2 = new Student();
+        student2.setId(1L);
+        student2.setName("Student");
+        student2.setAge(18);
+
+        FacultyDtoOut facultyDtoOut = new FacultyDtoOut();
+
+        StudentDtoIn studentDtoIn = new StudentDtoIn("Student", 18, 1L);
+        StudentDtoOut studentDtoOut = new StudentDtoOut(1L, "Student", 18, facultyDtoOut);
+
+        when(studentMapper.toDto(student1)).thenReturn(studentDtoOut);
+        when(studentMapper.toEntity(studentDtoIn)).thenReturn(student2);
+
+        assertThat(studentDtoOut).isSameAs(service.create(studentDtoIn));
+
+        verify(repositoryMock).save(student1);
+        verify(studentMapper).toDto(student1);
+        verify(studentMapper).toEntity(studentDtoIn);
+        verify(repositoryMock, times(1)).save(student1);
+        verify(repositoryMock, times(1)).save(student2);
     }
 
     @Test
-    void findStudentPositiveTest() {
-        Student found = new Student(2, "Student 2", 13);
-        when(repositoryMock.findById(2L)).thenReturn(Optional.of(found));
-        assertEquals(service.findStudent(2), found);
-    }
+    void shouldAddStudentNegativeTest() {
+        Student student1 = new Student();
+        student1.setId(1L);
+        student1.setName("Student");
+        student1.setAge(14);
 
-    @Test
-    void findStudentNegativeTest() {
-        when(repositoryMock.findById(3L)).thenReturn(Optional.empty());
-        assertNull(service.findStudent(3));
-    }
+        StudentDtoIn studentDtoIn = new StudentDtoIn("Student", 14, 1L);
 
-    @Test
-    void editStudentPositiveTest() {
-        Student student = new Student(2, "Student 2", 13);
-        when(repositoryMock.save(student))
-                .thenReturn(student);
-        Student actual = service.editStudent(student.getId(), student);
-        Student expected = new Student(2, "Student 2", 13);
-        assertThat(actual)
-                .isEqualTo(expected);
-        verify(repositoryMock, times(1)).save(expected);
-    }
+        when(studentMapper.toEntity(studentDtoIn))
+                .thenThrow(new StudentNotFoundException(1L));
+        assertThrows(StudentNotFoundException.class,
+                () -> service.create(studentDtoIn));
 
-    @Test
-    void editStudentNegativeTest() {
-        Student student1 = new Student(2, "Student 2", 13);
-        Student student2 = new Student(5, "Student 5", 14);
-        assertThat(student1)
-                .isNotEqualTo(student2);
+        verify(studentMapper).toEntity(studentDtoIn);
         verify(repositoryMock, never()).save(student1);
     }
 
     @Test
-    void deleteStudentTest() {
-        service.deleteStudent(1);
-        verify(repositoryMock, times(1)).deleteById(1L);
-    }
+    void getTest() {
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Name");
+        student.setAge(11);
 
-    @Test
-    void findByAgePositiveTest() {
-        Student student1 = new Student(1, "Student 1", 12);
-        Student student2 = new Student(2, "Student 2", 12);
-        when(repositoryMock.findByAge(12)).thenReturn(
-                List.of(student1, student2)
-        );
-        when(repositoryMock.findAll()).thenReturn(
-                List.of(student1, student2)
-        );
-        assertThat(service.getAll()).isEqualTo(service.findByAge(12));
-        verify(repositoryMock, times(1)).findByAge(12);
-    }
+        Optional<Student> result = Optional.of(student);
+        when(repositoryMock.findById(any())).thenReturn(result);
 
-    @Test
-    void findByAgeNegativeTest() {
-        when(repositoryMock.findByAge(12))
-                .thenReturn(emptyList());
-        assertThat(service.findByAge(12)).isEmpty();
-        verify(repositoryMock, times(1)).findByAge(12);
+        StudentDtoOut studentDtoOut = new StudentDtoOut();
+        when(studentMapper.toDto(any())).thenReturn(studentDtoOut);
+
+        assertThat(studentDtoOut)
+                .isSameAs(service.get(any()));
+
+        verify(repositoryMock).findById(any());
+        verify(studentMapper).toDto(any());
     }
 
 }

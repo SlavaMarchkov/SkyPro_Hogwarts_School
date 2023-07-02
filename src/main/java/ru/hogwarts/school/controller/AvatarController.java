@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.hogwarts.school.model.Avatar;
+import ru.hogwarts.school.entity.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 
 @RestController
 @RequestMapping(path = "/avatar")
+@Tag(name = "Контроллер по работе с аватарами")
 public class AvatarController {
 
     private final AvatarService avatarService;
@@ -32,7 +34,7 @@ public class AvatarController {
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId,
                                                @RequestParam MultipartFile avatar
     ) throws IOException {
-        if (avatar.getSize() >= 1024 * 300) {
+        if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("Avatar is too big");
         }
         avatarService.uploadAvatar(studentId, avatar);
@@ -62,7 +64,7 @@ public class AvatarController {
 
         try (
                 InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream();
+                OutputStream os = response.getOutputStream()
         ) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());

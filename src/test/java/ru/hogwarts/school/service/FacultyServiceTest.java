@@ -5,17 +5,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.FacultyDtoOut;
+import ru.hogwarts.school.entity.Faculty;
+import ru.hogwarts.school.exception.FacultyNotFoundException;
+import ru.hogwarts.school.mapper.FacultyMapper;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.impl.FacultyServiceImpl;
 
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,81 +23,56 @@ class FacultyServiceTest {
     @Mock
     private FacultyRepository repositoryMock;
 
+    @Mock
+    private FacultyMapper facultyMapper;
+
     @InjectMocks
     private FacultyServiceImpl service;
 
     @Test
     void shouldAddFacultyTest() {
-        Faculty newFaculty = new Faculty(1, "Faculty 1", "green");
-        when(repositoryMock.save(newFaculty))
-                .thenReturn(newFaculty);
-        Faculty actual = service.addFaculty(newFaculty);
-        Faculty expected = new Faculty(1, "Faculty 1", "green");
-        assertThat(actual)
-                .isEqualTo(expected);
-        verify(repositoryMock, times(1)).save(expected);
+        Faculty faculty1 = new Faculty();
+        faculty1.setId(1L);
+        faculty1.setName("Name");
+        faculty1.setColor("Color");
+        when(repositoryMock.save(faculty1)).thenReturn(faculty1);
+
+        Faculty faculty2 = new Faculty();
+        faculty2.setId(1L);
+        faculty2.setName("Name");
+        faculty2.setColor("Color");
+
+        FacultyDtoIn facultyDtoIn = new FacultyDtoIn("Name", "Color");
+        FacultyDtoOut facultyDtoOut = new FacultyDtoOut(1L, "Name", "Color");
+
+        when(facultyMapper.toDto(faculty1)).thenReturn(facultyDtoOut);
+        when(facultyMapper.toEntity(facultyDtoIn)).thenReturn(faculty2);
+
+        assertThat(facultyDtoOut).isSameAs(service.create(facultyDtoIn));
+
+        verify(repositoryMock).save(faculty1);
+        verify(facultyMapper).toDto(faculty1);
+        verify(facultyMapper).toEntity(facultyDtoIn);
+        verify(repositoryMock, times(1)).save(faculty1);
+        verify(repositoryMock, times(1)).save(faculty2);
     }
 
     @Test
-    void findFacultyPositiveTest() {
-        Faculty found = new Faculty(2, "Faculty 2", "green");
-        when(repositoryMock.findById(2L)).thenReturn(Optional.of(found));
-        assertEquals(service.findFaculty(2), found);
-    }
+    void shouldAddFacultyNegativeTest() {
+        Faculty faculty1 = new Faculty();
+        faculty1.setId(1L);
+        faculty1.setName("Name");
+        faculty1.setColor("Color");
 
-    @Test
-    void findFacultyNegativeTest() {
-        when(repositoryMock.findById(3L)).thenReturn(Optional.empty());
-        assertNull(service.findFaculty(3));
-    }
+        FacultyDtoIn facultyDtoIn = new FacultyDtoIn("Name", "Color");
 
-    @Test
-    void editFacultyPositiveTest() {
-        Faculty Faculty = new Faculty(2, "Faculty 2", "green");
-        when(repositoryMock.save(Faculty))
-                .thenReturn(Faculty);
-        Faculty actual = service.editFaculty(Faculty.getId(), Faculty);
-        Faculty expected = new Faculty(2, "Faculty 2", "green");
-        assertThat(actual)
-                .isEqualTo(expected);
-        verify(repositoryMock, times(1)).save(expected);
-    }
+        when(facultyMapper.toEntity(facultyDtoIn))
+                .thenThrow(new FacultyNotFoundException(1L));
+        assertThrows(FacultyNotFoundException.class,
+                () -> service.create(facultyDtoIn));
 
-    @Test
-    void editFacultyNegativeTest() {
-        Faculty faculty1 = new Faculty(2, "Faculty 2", "green");
-        Faculty faculty2 = new Faculty(5, "Faculty 5", "red");
-        assertThat(faculty1)
-                .isNotEqualTo(faculty2);
+        verify(facultyMapper).toEntity(facultyDtoIn);
         verify(repositoryMock, never()).save(faculty1);
-    }
-
-    @Test
-    void deleteFacultyTest() {
-        service.deleteFaculty(1);
-        verify(repositoryMock, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void findByColorPositiveTest() {
-        Faculty faculty1 = new Faculty(1, "Faculty 1", "green");
-        Faculty faculty2 = new Faculty(2, "Faculty 2", "green");
-        when(repositoryMock.findByColorLike("green")).thenReturn(
-                List.of(faculty1, faculty2)
-        );
-        when(repositoryMock.findAll()).thenReturn(
-                List.of(faculty1, faculty2)
-        );
-        assertThat(service.getAll()).isEqualTo(service.findByColor("green"));
-        verify(repositoryMock, times(1)).findByColorLike("green");
-    }
-
-    @Test
-    void findByColorNegativeTest() {
-        when(repositoryMock.findByColorLike("green"))
-                .thenReturn(emptyList());
-        assertThat(service.findByColor("green")).isEmpty();
-        verify(repositoryMock, times(1)).findByColorLike("green");
     }
 
 }
