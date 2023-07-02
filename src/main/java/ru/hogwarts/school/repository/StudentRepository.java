@@ -1,14 +1,16 @@
 package ru.hogwarts.school.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.entity.Student;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Collection<Student> findByAge(int age);
+    List<Student> findAllByAge(Integer age);
 
-    Collection<Student> findByAgeBetween(int minAge, int maxAge);
+    List<Student> findAllByAgeBetween(Integer ageFrom, Integer ageTo);
+
+    List<Student> findAllByFaculty_Id(Long facultyId);
 
 }

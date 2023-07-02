@@ -1,75 +1,106 @@
 package ru.hogwarts.school.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.FacultyDtoOut;
+import ru.hogwarts.school.dto.StudentDtoOut;
+import ru.hogwarts.school.entity.Faculty;
+import ru.hogwarts.school.exception.FacultyNotFoundException;
+import ru.hogwarts.school.mapper.FacultyMapper;
+import ru.hogwarts.school.mapper.StudentMapper;
 import ru.hogwarts.school.repository.FacultyRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
     private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
+    private final FacultyMapper facultyMapper;
+    private final StudentMapper studentMapper;
 
     @Autowired
-    public FacultyServiceImpl(final FacultyRepository facultyRepository) {
+    public FacultyServiceImpl(final FacultyRepository facultyRepository,
+                              final StudentRepository studentRepository,
+                              final FacultyMapper facultyMapper,
+                              final StudentMapper studentMapper
+    ) {
         this.facultyRepository = facultyRepository;
-    }
-
-
-    @Override
-    public Faculty addFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+        this.studentRepository = studentRepository;
+        this.facultyMapper = facultyMapper;
+        this.studentMapper = studentMapper;
     }
 
     @Override
-    public Faculty findFaculty(long id) {
-        Optional<Faculty> foundFaculty = facultyRepository.findById(id);
-        return foundFaculty.orElse(null);
+    public FacultyDtoOut create(FacultyDtoIn facultyDtoIn) {
+        return facultyMapper.toDto(
+                facultyRepository.save(
+                        facultyMapper.toEntity(facultyDtoIn)
+                )
+        );
     }
 
     @Override
-    public Faculty editFaculty(long id, Faculty faculty) {
-        return facultyRepository.save(faculty);
+    public FacultyDtoOut get(Long id) {
+        return facultyRepository
+                .findById(id)
+                .map(facultyMapper::toDto)
+                .orElseThrow(() -> new FacultyNotFoundException(id));
     }
 
     @Override
-    public void deleteFaculty(long id) {
-        facultyRepository.deleteById(id);
+    public FacultyDtoOut update(Long id, FacultyDtoIn facultyDtoIn) {
+        return facultyRepository
+                .findById(id)
+                .map(oldFaculty -> {
+                    oldFaculty.setName(facultyDtoIn.getName());
+                    oldFaculty.setColor(facultyDtoIn.getColor());
+                    return facultyMapper.toDto(facultyRepository.save(oldFaculty));
+                })
+                .orElseThrow(() -> new FacultyNotFoundException(id));
     }
 
     @Override
-    public Collection<Faculty> findByColor(String color) {
-        return facultyRepository.findByColorLike(color);
+    public FacultyDtoOut delete(Long id) {
+        Faculty faculty = facultyRepository
+                .findById(id)
+                .orElseThrow(() -> new FacultyNotFoundException(id));
+        facultyRepository.delete(faculty);
+        return facultyMapper.toDto(faculty);
     }
 
     @Override
-    public Collection<Faculty> findByNameOrColor(String name, String color) {
-        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    public List<FacultyDtoOut> findByColorOrName(String colorOrName) {
+        return facultyRepository
+                .findAllByColorContainingIgnoreCaseOrNameContainingIgnoreCase(colorOrName, colorOrName)
+                .stream()
+                .map(facultyMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Collection<Faculty> getAll() {
-        return facultyRepository.findAll();
+    public List<FacultyDtoOut> findAll(@Nullable String color) {
+        return Optional.ofNullable(color)
+                .map(facultyRepository::findAllByColor)
+                .orElseGet(facultyRepository::findAll)
+                .stream()
+                .map(facultyMapper::toDto)
+                .toList();
     }
 
     @Override
-    public int size() {
-        return getAll().size();
-    }
-
-    @Override
-    public Collection<Student> getFacultyStudents(Long id) {
-        Optional<Faculty> foundFaculty = Optional.ofNullable(findFaculty(id));
-        if (foundFaculty.isPresent()) {
-            return foundFaculty.get().getStudents();
-        }
-        return Collections.emptyList();
+    public List<StudentDtoOut> getFacultyStudents(Long id) {
+        return studentRepository
+                .findAllByFaculty_Id(id)
+                .stream()
+                .map(studentMapper::toDto)
+                .toList();
     }
 
 }

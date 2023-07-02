@@ -1,29 +1,27 @@
 package ru.hogwarts.school.service;
 
-import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
+import org.springframework.lang.Nullable;
+import ru.hogwarts.school.dto.FacultyDtoIn;
+import ru.hogwarts.school.dto.FacultyDtoOut;
+import ru.hogwarts.school.dto.StudentDtoOut;
 
-import java.util.Collection;
+import java.util.List;
 
 
 public interface FacultyService {
 
-    Faculty addFaculty(Faculty faculty);
+    FacultyDtoOut create(FacultyDtoIn facultyDtoIn);
 
-    Faculty findFaculty(long id);
+    FacultyDtoOut update(Long id, FacultyDtoIn facultyDtoIn);
 
-    Faculty editFaculty(long id, Faculty faculty);
+    FacultyDtoOut delete(Long id);
 
-    void deleteFaculty(long id);
+    FacultyDtoOut get(Long id);
 
-    Collection<Faculty> findByColor(String color);
+    List<FacultyDtoOut> findAll(@Nullable String color);
 
-    Collection<Faculty> findByNameOrColor(String name, String color);
+    List<FacultyDtoOut> findByColorOrName(String colorOrName);
 
-    Collection<Faculty> getAll();
-
-    int size();
-
-    Collection<Student> getFacultyStudents(Long id);
+    List<StudentDtoOut> getFacultyStudents(Long id);
 
 }

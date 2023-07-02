@@ -1,28 +1,26 @@
 package ru.hogwarts.school.service;
 
-import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
+import org.springframework.lang.Nullable;
+import ru.hogwarts.school.dto.FacultyDtoOut;
+import ru.hogwarts.school.dto.StudentDtoIn;
+import ru.hogwarts.school.dto.StudentDtoOut;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface StudentService {
 
-    Student addStudent(Student student);
+    StudentDtoOut create(StudentDtoIn studentDtoIn);
 
-    Student findStudent(long id);
+    StudentDtoOut get(Long id);
 
-    Student editStudent(long id, Student student);
+    StudentDtoOut update(Long id, StudentDtoIn studentDtoIn);
 
-    void deleteStudent(long id);
+    StudentDtoOut delete(Long id);
 
-    Collection<Student> findByAge(int age);
+    List<StudentDtoOut> findAll(@Nullable Integer age);
 
-    Collection<Student> findByAgeBetween(int minAge, int maxAge);
+    List<StudentDtoOut> findByAgeBetween(Integer ageFrom, Integer ageTo);
 
-    Collection<Student> getAll();
-
-    int size();
-
-    Faculty getFacultyForStudent(Long id);
+    FacultyDtoOut getFacultyForStudent(Long id);
 
 }

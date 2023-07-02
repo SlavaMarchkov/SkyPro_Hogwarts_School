@@ -1,16 +1,15 @@
-package ru.hogwarts.school.model;
+package ru.hogwarts.school.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
+@Table(name = "avatars")
 public class Avatar {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String filePath;
@@ -25,12 +24,13 @@ public class Avatar {
 
     }
 
-    public Avatar(String filePath, long fileSize, String mediaType, byte[] data) {
+    public Avatar(Long id, String filePath, long fileSize, String mediaType, byte[] data, Student student) {
+        this.id = id;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
         this.data = data;
-        this.student = null;
+        this.student = student;
     }
 
     public Long getId() {
@@ -93,4 +93,29 @@ public class Avatar {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Avatar avatar = (Avatar) o;
+
+        if (fileSize != avatar.fileSize) return false;
+        if (!Objects.equals(id, avatar.id)) return false;
+        if (!Objects.equals(filePath, avatar.filePath)) return false;
+        if (!Objects.equals(mediaType, avatar.mediaType)) return false;
+        if (!Arrays.equals(data, avatar.data)) return false;
+        return Objects.equals(student, avatar.student);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+        result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
+        result = 31 * result + (mediaType != null ? mediaType.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(data);
+        result = 31 * result + (student != null ? student.hashCode() : 0);
+        return result;
+    }
 }
