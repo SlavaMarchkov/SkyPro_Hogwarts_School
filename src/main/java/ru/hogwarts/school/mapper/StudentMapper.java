@@ -30,7 +30,6 @@ public class StudentMapper {
         studentDtoOut.setId(student.getId());
         studentDtoOut.setName(student.getName());
         studentDtoOut.setAge(student.getAge());
-//        studentDtoOut.setAvatarUrl("http://localhost:8080/avatar/" + student. avatar.getId() + "/avatar-from-db");
 
         Optional.ofNullable(student.getFaculty())
                 .ifPresent(faculty ->
