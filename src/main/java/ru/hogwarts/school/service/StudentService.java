@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.dto.StudentDtoIn;
 import ru.hogwarts.school.dto.StudentDtoOut;
@@ -22,5 +23,7 @@ public interface StudentService {
     List<StudentDtoOut> findByAgeBetween(Integer ageFrom, Integer ageTo);
 
     FacultyDtoOut getFacultyForStudent(Long id);
+
+    StudentDtoOut uploadAvatar(Long id, MultipartFile file);
 
 }

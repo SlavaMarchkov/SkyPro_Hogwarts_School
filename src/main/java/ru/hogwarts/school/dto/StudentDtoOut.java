@@ -1,23 +1,28 @@
 package ru.hogwarts.school.dto;
 
-import ru.hogwarts.school.entity.Avatar;
-
 public class StudentDtoOut {
 
     private long id;
     private String name;
     private int age;
     private FacultyDtoOut faculty;
-    private Avatar avatar;
+    private String avatarUrl; // путь к аватарке
 
     public StudentDtoOut() {
     }
 
-    public StudentDtoOut(long id, String name, int age, FacultyDtoOut faculty) {
+    public StudentDtoOut(
+            long id,
+            String name,
+            int age,
+            FacultyDtoOut faculty,
+            String url
+    ) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.faculty = faculty;
+        this.avatarUrl = url;
     }
 
     public long getId() {
@@ -52,11 +57,12 @@ public class StudentDtoOut {
         this.faculty = faculty;
     }
 
-    public Avatar getAvatar() {
-        return avatar;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
+
 }

@@ -1,14 +1,18 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.entity.Avatar;
-
-import java.io.IOException;
+import ru.hogwarts.school.entity.Student;
 
 public interface AvatarService {
 
-    void uploadAvatar(Long id, MultipartFile file) throws IOException;
-
     Avatar findAvatar(Long id);
+
+    Avatar create(Student student, MultipartFile file);
+
+    Pair<byte[], String> getFromDB(Long id);
+
+    Pair<byte[], String> getFromFS(Long id);
 
 }

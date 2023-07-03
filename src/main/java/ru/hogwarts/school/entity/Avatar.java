@@ -15,23 +15,13 @@ public class Avatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+
+    @Lob
     private byte[] data;
 
     @OneToOne
+    @JoinColumn(name = "student_id")
     private Student student;
-
-    public Avatar() {
-
-    }
-
-    public Avatar(Long id, String filePath, long fileSize, String mediaType, byte[] data, Student student) {
-        this.id = id;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
-        this.mediaType = mediaType;
-        this.data = data;
-        this.student = student;
-    }
 
     public Long getId() {
         return id;
