@@ -232,7 +232,6 @@ class FacultyControllerTest {
                                 assertThat(facultyDtoOut.getName()).isEqualTo(expected.getName());
                                 assertThat(facultyDtoOut.getColor()).isEqualTo(expected.getColor());
                             });
-
                 });
 
         // color
@@ -266,7 +265,6 @@ class FacultyControllerTest {
                                 assertThat(facultyDtoOut.getName()).isEqualTo(expected.getName());
                                 assertThat(facultyDtoOut.getColor()).isEqualTo(expected.getColor());
                             });
-
                 });
     }
 
@@ -311,7 +309,6 @@ class FacultyControllerTest {
                                 assertThat(facultyDtoOut.getName()).isEqualTo(expected.getName());
                                 assertThat(facultyDtoOut.getColor()).isEqualTo(expected.getColor());
                             });
-
                 });
     }
 
