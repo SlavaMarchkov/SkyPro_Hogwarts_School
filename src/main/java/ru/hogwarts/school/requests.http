@@ -1,0 +1,37 @@
+### Create student POST request
+POST http://localhost:8080/student
+Content-Type: application/json
+
+{
+  "name": "Harry Potter",
+  "age": 14,
+  "facultyId": 1
+}
+
+### Create faculty POST request
+POST http://localhost:8080/faculty
+Content-Type: application/json
+
+{
+  "name": "Physics",
+  "color": "green"
+}
+
+### GET all students
+GET http://localhost:8080/student
+Accept: application/json
+
+### GET a student by ID
+GET http://localhost:8080/student/1
+Accept: application/json
+
+### Send a form with the text and file fields
+PATCH http://localhost:8080/student/1/avatar
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="harry.jpg"
+Content-Type: image/jpeg
+
+< harry.jpg
+--WebAppBoundary

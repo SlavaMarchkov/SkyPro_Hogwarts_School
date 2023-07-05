@@ -18,9 +18,6 @@ public class Student {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    @OneToOne
-    private Avatar avatar;
-
     public long getId() {
         return id;
     }
@@ -64,6 +61,7 @@ public class Student {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
+                ", faculty=" + faculty +
                 '}';
     }
 
@@ -75,11 +73,4 @@ public class Student {
         this.faculty = faculty;
     }
 
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
-    }
 }

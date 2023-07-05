@@ -2,7 +2,9 @@ package ru.hogwarts.school.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.dto.StudentDtoIn;
 import ru.hogwarts.school.dto.StudentDtoOut;
@@ -58,6 +60,13 @@ public class StudentController {
     @GetMapping(path = "{id}/faculty")
     public FacultyDtoOut getFacultyForStudent(@PathVariable(value = "id") Long id) {
         return studentService.getFacultyForStudent(id);
+    }
+
+    @PatchMapping(value = "{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public StudentDtoOut uploadAvatar(@PathVariable(value = "id") Long id,
+                                      @RequestPart(name = "avatar") MultipartFile multipartFile
+    ) {
+        return studentService.uploadAvatar(id, multipartFile);
     }
 
 }
