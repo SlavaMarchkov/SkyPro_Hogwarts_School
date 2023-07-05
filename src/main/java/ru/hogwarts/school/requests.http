@@ -3,9 +3,9 @@ POST http://localhost:8080/student
 Content-Type: application/json
 
 {
-  "name": "Harry Potter",
-  "age": 14,
-  "facultyId": 1
+  "name": "Bob Denard",
+  "age": 22,
+  "facultyId": 2
 }
 
 ### Create faculty POST request
@@ -13,12 +13,24 @@ POST http://localhost:8080/faculty
 Content-Type: application/json
 
 {
-  "name": "Physics",
-  "color": "green"
+  "name": "Witchery",
+  "color": "blue"
 }
 
 ### GET all students
 GET http://localhost:8080/student
+Accept: application/json
+
+### GET all students count
+GET http://localhost:8080/student/all-students-count
+Accept: application/json
+
+### GET average age of all students
+GET http://localhost:8080/student/avg-students-age
+Accept: application/json
+
+### GET five students that were added last
+GET http://localhost:8080/student/five-last-students
 Accept: application/json
 
 ### GET a student by ID

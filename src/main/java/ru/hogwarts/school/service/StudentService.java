@@ -26,4 +26,10 @@ public interface StudentService {
 
     StudentDtoOut uploadAvatar(Long id, MultipartFile file);
 
+    int countAllStudentsInTheSchool();
+
+    double getAverageAgeOfStudents();
+
+    List<StudentDtoOut> getFiveLastStudents();
+
 }
