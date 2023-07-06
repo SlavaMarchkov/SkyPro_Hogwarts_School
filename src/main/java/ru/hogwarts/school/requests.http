@@ -33,12 +33,16 @@ Accept: application/json
 GET http://localhost:8080/student/five-last-students
 Accept: application/json
 
+### GET avatars (using pagination)
+GET http://localhost:8080/avatar?page=1&size=3
+Accept: application/json
+
 ### GET a student by ID
 GET http://localhost:8080/student/1
 Accept: application/json
 
 ### Send a form with the text and file fields
-PATCH http://localhost:8080/student/1/avatar
+PATCH http://localhost:8080/student/2/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
