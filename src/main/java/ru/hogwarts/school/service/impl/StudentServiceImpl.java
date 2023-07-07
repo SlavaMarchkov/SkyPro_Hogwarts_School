@@ -128,4 +128,23 @@ public class StudentServiceImpl implements StudentService {
         return studentDtoOut;
     }
 
+    @Override
+    public int countAllStudentsInTheSchool() {
+        return studentRepository.countAllStudentsInTheSchool();
+    }
+
+    @Override
+    public double getAverageAgeOfStudents() {
+        return studentRepository.getAverageAgeOfStudents();
+    }
+
+    @Override
+    public List<StudentDtoOut> getFiveLastStudents() {
+        return studentRepository
+                .getFiveLastStudents()
+                .stream()
+                .map(studentMapper::toDto)
+                .toList();
+    }
+
 }

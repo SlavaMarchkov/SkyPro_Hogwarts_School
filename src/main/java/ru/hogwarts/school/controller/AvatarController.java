@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.dto.AvatarDtoOut;
 import ru.hogwarts.school.service.AvatarService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/avatar")
@@ -21,6 +21,13 @@ public class AvatarController {
     @Autowired
     public AvatarController(final AvatarService avatarService) {
         this.avatarService = avatarService;
+    }
+
+    @GetMapping
+    public List<AvatarDtoOut> getAllAvatars(@RequestParam(value = "page") Integer pageNumber,
+                                            @RequestParam(value = "size") Integer pageSize
+    ) {
+        return avatarService.getAllAvatars(pageNumber, pageSize);
     }
 
     @GetMapping(value = "{id}/avatar-from-db")
