@@ -48,7 +48,7 @@ class StudentServiceTest {
         FacultyDtoOut facultyDtoOut = new FacultyDtoOut();
 
         StudentDtoIn studentDtoIn = new StudentDtoIn("Student", 18, 1L);
-        StudentDtoOut studentDtoOut = new StudentDtoOut(1L, "Student", 18, facultyDtoOut, "someUrl");
+        StudentDtoOut studentDtoOut = new StudentDtoOut();
 
         when(studentMapper.toDto(student1)).thenReturn(studentDtoOut);
         when(studentMapper.toEntity(studentDtoIn)).thenReturn(student2);

@@ -18,6 +18,9 @@ public class Student {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
+
     public long getId() {
         return id;
     }
@@ -40,6 +43,14 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 
     @Override

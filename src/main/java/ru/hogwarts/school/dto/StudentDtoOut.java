@@ -6,24 +6,7 @@ public class StudentDtoOut {
     private String name;
     private int age;
     private FacultyDtoOut faculty;
-    private String avatarUrl; // путь к аватарке
-
-    public StudentDtoOut() {
-    }
-
-    public StudentDtoOut(
-            long id,
-            String name,
-            int age,
-            FacultyDtoOut faculty,
-            String url
-    ) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.faculty = faculty;
-        this.avatarUrl = url;
-    }
+    private AvatarDtoOut avatar;
 
     public long getId() {
         return id;
@@ -57,12 +40,12 @@ public class StudentDtoOut {
         this.faculty = faculty;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public AvatarDtoOut getAvatar() {
+        return avatar;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatar(AvatarDtoOut avatar) {
+        this.avatar = avatar;
     }
 
 }

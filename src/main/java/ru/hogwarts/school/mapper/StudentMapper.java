@@ -15,13 +15,15 @@ public class StudentMapper {
 
     private final FacultyMapper facultyMapper;
     private final FacultyRepository facultyRepository;
+    private final AvatarMapper avatarMapper;
 
     @Autowired
     public StudentMapper(FacultyMapper facultyMapper,
-                         FacultyRepository facultyRepository
-    ) {
+                         FacultyRepository facultyRepository,
+                         AvatarMapper avatarMapper) {
         this.facultyMapper = facultyMapper;
         this.facultyRepository = facultyRepository;
+        this.avatarMapper = avatarMapper;
     }
 
     public StudentDtoOut toDto(Student student) {
@@ -35,6 +37,13 @@ public class StudentMapper {
                 .ifPresent(faculty ->
                         studentDtoOut.setFaculty(
                                 facultyMapper.toDto(faculty)
+                        )
+                );
+
+        Optional.ofNullable(student.getAvatar())
+                .ifPresent(avatar ->
+                        studentDtoOut.setAvatar(
+                                avatarMapper.toDto(avatar)
                         )
                 );
 

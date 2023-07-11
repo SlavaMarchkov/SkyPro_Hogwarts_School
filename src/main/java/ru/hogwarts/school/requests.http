@@ -3,8 +3,8 @@ POST http://localhost:8080/student
 Content-Type: application/json
 
 {
-  "name": "Bob Denard",
-  "age": 22,
+  "name": "Silvio Berlusconni",
+  "age": 26,
   "facultyId": 2
 }
 
@@ -22,32 +22,32 @@ GET http://localhost:8080/student
 Accept: application/json
 
 ### GET all students count
-GET http://localhost:8080/student/all-students-count
+GET http://localhost:8080/student/allStudentsCount
 Accept: application/json
 
 ### GET average age of all students
-GET http://localhost:8080/student/avg-students-age
+GET http://localhost:8080/student/avgStudentsAge
 Accept: application/json
 
-### GET five students that were added last
-GET http://localhost:8080/student/five-last-students
+### GET students that were added last
+GET http://localhost:8080/student/lastStudents?count=20
 Accept: application/json
 
 ### GET avatars (using pagination)
-GET http://localhost:8080/avatar?page=1&size=3
+GET http://localhost:8080/avatar
 Accept: application/json
 
 ### GET a student by ID
-GET http://localhost:8080/student/1
+GET http://localhost:8080/student/6
 Accept: application/json
 
 ### Send a form with the text and file fields
-PATCH http://localhost:8080/student/2/avatar
+PATCH http://localhost:8080/student/6/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; name="avatar"; filename="harry.jpg"
+Content-Disposition: form-data; name="avatar"; filename="idol.jpg"
 Content-Type: image/jpeg
 
-< harry.jpg
+< idol.jpg
 --WebAppBoundary
