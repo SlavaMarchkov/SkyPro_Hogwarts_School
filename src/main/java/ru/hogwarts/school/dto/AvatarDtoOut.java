@@ -7,17 +7,19 @@ public class AvatarDtoOut {
     private long fileSize;
     private String mediaType;
     private long studentId;
+    private String avatarUrl;
 
     public AvatarDtoOut() {
 
     }
 
-    public AvatarDtoOut(Long id, String filePath, long fileSize, String mediaType, long studentId) {
+    public AvatarDtoOut(Long id, String filePath, long fileSize, String mediaType, long studentId, String avatarUrl) {
         this.id = id;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
         this.studentId = studentId;
+        this.avatarUrl = avatarUrl;
     }
 
     public Long getId() {
@@ -58,6 +60,14 @@ public class AvatarDtoOut {
 
     public void setStudentId(long studentId) {
         this.studentId = studentId;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
 }

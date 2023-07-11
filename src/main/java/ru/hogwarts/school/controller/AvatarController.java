@@ -12,9 +12,11 @@ import ru.hogwarts.school.service.AvatarService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/avatar")
+@RequestMapping(path = AvatarController.BASE_PATH)
 @Tag(name = "Контроллер по работе с аватарами")
 public class AvatarController {
+
+    public static final String BASE_PATH = "avatar";
 
     private final AvatarService avatarService;
 
@@ -24,18 +26,18 @@ public class AvatarController {
     }
 
     @GetMapping
-    public List<AvatarDtoOut> getAllAvatars(@RequestParam(value = "page") Integer pageNumber,
-                                            @RequestParam(value = "size") Integer pageSize
+    public List<AvatarDtoOut> getAllAvatars(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageNumber,
+                                            @RequestParam(value = "size", required = false, defaultValue = "3") Integer pageSize
     ) {
-        return avatarService.getAllAvatars(pageNumber, pageSize);
+        return avatarService.getAllAvatars(Math.abs(pageNumber), Math.abs(pageSize));
     }
 
-    @GetMapping(value = "{id}/avatar-from-db")
+    @GetMapping(value = "{id}/avatarFromDb")
     public ResponseEntity<byte[]> getAvatarFromDB(@PathVariable(value = "id") Long id) {
         return build(avatarService.getFromDB(id));
     }
 
-    @GetMapping(value = "{id}/avatar-from-file")
+    @GetMapping(value = "{id}/avatarFromFile")
     public ResponseEntity<byte[]> getAvatarFromFS(@PathVariable(value = "id") Long id) {
         return build(avatarService.getFromFS(id));
     }

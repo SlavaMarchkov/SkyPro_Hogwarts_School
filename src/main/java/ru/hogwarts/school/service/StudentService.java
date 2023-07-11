@@ -30,6 +30,6 @@ public interface StudentService {
 
     double getAverageAgeOfStudents();
 
-    List<StudentDtoOut> getFiveLastStudents();
+    List<StudentDtoOut> getLastStudents(int count);
 
 }

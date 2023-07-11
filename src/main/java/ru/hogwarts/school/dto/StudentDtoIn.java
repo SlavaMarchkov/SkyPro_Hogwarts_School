@@ -4,7 +4,7 @@ public class StudentDtoIn {
 
     private String name;
     private int age;
-    private long facultyId;
+    private Long facultyId;
 
     public StudentDtoIn() {
     }
@@ -31,11 +31,11 @@ public class StudentDtoIn {
         this.age = age;
     }
 
-    public long getFacultyId() {
+    public Long getFacultyId() {
         return facultyId;
     }
 
-    public void setFacultyId(long facultyId) {
+    public void setFacultyId(Long facultyId) {
         this.facultyId = facultyId;
     }
 }

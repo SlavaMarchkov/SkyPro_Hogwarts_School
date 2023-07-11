@@ -1,8 +1,10 @@
 package ru.hogwarts.school.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.dto.StudentDtoIn;
@@ -123,9 +125,8 @@ public class StudentServiceImpl implements StudentService {
                 .findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
         Avatar avatar = avatarService.create(student, file);
-        StudentDtoOut studentDtoOut = studentMapper.toDto(student);
-        studentDtoOut.setAvatarUrl("http://localhost:8080/avatar/" + avatar.getId() + "/avatar-from-db");
-        return studentDtoOut;
+        student.setAvatar(avatar);
+        return studentMapper.toDto(student);
     }
 
     @Override
@@ -139,9 +140,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDtoOut> getFiveLastStudents() {
-        return studentRepository
-                .getFiveLastStudents()
+    @Transactional(readOnly = true)
+    public List<StudentDtoOut> getLastStudents(int count) {
+        return studentRepository.getLastStudents(Pageable.ofSize(count))
                 .stream()
                 .map(studentMapper::toDto)
                 .toList();

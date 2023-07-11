@@ -16,6 +16,7 @@ import ru.hogwarts.school.controller.FacultyController;
 import ru.hogwarts.school.dto.FacultyDtoIn;
 import ru.hogwarts.school.dto.FacultyDtoOut;
 import ru.hogwarts.school.entity.Faculty;
+import ru.hogwarts.school.mapper.AvatarMapper;
 import ru.hogwarts.school.mapper.FacultyMapper;
 import ru.hogwarts.school.mapper.StudentMapper;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -46,6 +47,8 @@ class FacultyControllerTest {
     private FacultyMapper facultyMapper;
     @SpyBean
     private StudentMapper studentMapper;
+    @SpyBean
+    private AvatarMapper avatarMapper;
     @MockBean
     private FacultyRepository facultyRepository;
     @MockBean
