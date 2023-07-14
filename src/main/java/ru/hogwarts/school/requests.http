@@ -45,6 +45,10 @@ Accept: application/json
 GET http://localhost:8080/faculty/70
 Accept: application/json
 
+### GET the port
+GET http://localhost:8080/getPort
+Accept: application/json
+
 ### Send a form with the text and file fields
 PATCH http://localhost:8080/student/11/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
