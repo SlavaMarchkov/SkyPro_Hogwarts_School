@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class FacultyServiceImpl implements FacultyService {
     private final StudentRepository studentRepository;
     private final FacultyMapper facultyMapper;
     private final StudentMapper studentMapper;
+    Logger logger = LoggerFactory.getLogger(FacultyServiceImpl.class);
 
     @Autowired
     public FacultyServiceImpl(final FacultyRepository facultyRepository,
@@ -39,6 +42,8 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDtoOut create(FacultyDtoIn facultyDtoIn) {
+        logger.info("Was invoked method for creating a Faculty");
+
         return facultyMapper.toDto(
                 facultyRepository.save(
                         facultyMapper.toEntity(facultyDtoIn)
@@ -48,6 +53,8 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDtoOut get(Long id) {
+        logger.info("Was invoked method for getting the Faculty with id = {}", id);
+
         return facultyRepository
                 .findById(id)
                 .map(facultyMapper::toDto)
@@ -56,11 +63,16 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDtoOut update(Long id, FacultyDtoIn facultyDtoIn) {
+        logger.info("Was invoked method for updating the Faculty with id = {}", id);
+
         return facultyRepository
                 .findById(id)
                 .map(oldFaculty -> {
                     oldFaculty.setName(facultyDtoIn.getName());
                     oldFaculty.setColor(facultyDtoIn.getColor());
+
+                    logger.warn("The Faculty with id = {} was successfully updated", id);
+
                     return facultyMapper.toDto(facultyRepository.save(oldFaculty));
                 })
                 .orElseThrow(() -> new FacultyNotFoundException(id));
@@ -68,15 +80,23 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public FacultyDtoOut delete(Long id) {
+        logger.info("Was invoked method for deleting the Faculty with id = {}", id);
+
         Faculty faculty = facultyRepository
                 .findById(id)
                 .orElseThrow(() -> new FacultyNotFoundException(id));
+
         facultyRepository.delete(faculty);
+
+        logger.warn("The Faculty with id = {} was successfully deleted", id);
+
         return facultyMapper.toDto(faculty);
     }
 
     @Override
     public List<FacultyDtoOut> findByColorOrName(String colorOrName) {
+        logger.info("Was invoked method for finding the Faculty with color or name = {}", colorOrName);
+
         return facultyRepository
                 .findAllByColorContainingIgnoreCaseOrNameContainingIgnoreCase(colorOrName, colorOrName)
                 .stream()
@@ -86,6 +106,8 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public List<FacultyDtoOut> findAll(@Nullable String color) {
+        logger.info("Was invoked method for finding all the Faculties or the Faculties with color = {}", color);
+
         return Optional.ofNullable(color)
                 .map(facultyRepository::findAllByColor)
                 .orElseGet(facultyRepository::findAll)
@@ -96,6 +118,8 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public List<StudentDtoOut> getFacultyStudents(Long id) {
+        logger.info("Was invoked method for getting all the students of the Faculty with id = {}", id);
+
         return studentRepository
                 .findAllByFaculty_Id(id)
                 .stream()

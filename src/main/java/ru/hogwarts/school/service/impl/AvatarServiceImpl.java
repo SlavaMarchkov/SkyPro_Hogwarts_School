@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ public class AvatarServiceImpl implements AvatarService {
     private final AvatarRepository avatarRepository;
     private final AvatarMapper avatarMapper;
     private final Path pathToAvatarsDir;
+    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
 
     @Autowired
     public AvatarServiceImpl(final AvatarRepository avatarRepository,
@@ -43,6 +46,8 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar findAvatar(Long id) {
+        logger.info("Was invoked method for finding an Avatar with id = {}", id);
+
         return avatarRepository.findByStudentId(id).orElseGet(Avatar::new);
     }
 
@@ -68,8 +73,12 @@ public class AvatarServiceImpl implements AvatarService {
             avatar.setData(data);
             avatar.setStudent(student);
             avatar.setFilePath(pathToAvatar.toString());
+
+            logger.warn("File for the Avatar was successfully saved with path = {}", pathToAvatar);
+
             return avatarRepository.save(avatar);
         } catch (IOException e) {
+            logger.error("There was a problem with saving the file");
             throw new AvatarProcessingException();
         }
     }
@@ -78,6 +87,7 @@ public class AvatarServiceImpl implements AvatarService {
         try (FileOutputStream fos = new FileOutputStream(path.toFile())) {
             fos.write(data);
         } catch (IOException e) {
+            logger.error("There was a problem with writing the file");
             throw new AvatarProcessingException();
         }
     }
@@ -86,12 +96,15 @@ public class AvatarServiceImpl implements AvatarService {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
             return fis.readAllBytes();
         } catch (IOException e) {
+            logger.error("There was a problem with reading the file");
             throw new AvatarProcessingException();
         }
     }
 
     @Override
     public Pair<byte[], String> getFromDB(Long id) {
+        logger.info("Was invoked method for getting file from Database for the Avatar with id = {}", id);
+
         Avatar avatar = avatarRepository.findById(id)
                 .orElseThrow(() -> new AvatarNotFoundException(id));
         return Pair.of(avatar.getData(), avatar.getMediaType());
@@ -99,6 +112,8 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Pair<byte[], String> getFromFS(Long id) {
+        logger.info("Was invoked method for getting file from FileSystem for the Avatar with id = {}", id);
+
         Avatar avatar = avatarRepository.findById(id)
                 .orElseThrow(() -> new AvatarNotFoundException(id));
         return Pair.of(read(Path.of(avatar.getFilePath())), avatar.getMediaType());
@@ -114,6 +129,8 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public List<AvatarDtoOut> getAllAvatars(final Integer pageNumber, final Integer pageSize) {
+        logger.info("Was invoked method for getting all the Avatars split by pages");
+
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).stream()
                 .map(avatarMapper::toDto)
