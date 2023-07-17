@@ -1,5 +1,5 @@
 ### Create student POST request
-POST http://localhost:8080/student
+POST {{host}}/student
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### Create faculty POST request
-POST http://localhost:8080/faculty
+POST {{host}}/faculty
 Content-Type: application/json
 
 {
@@ -18,31 +18,39 @@ Content-Type: application/json
 }
 
 ### GET all students
-GET http://localhost:8080/student
+GET {{host}}/student
 Accept: application/json
 
 ### GET all students count
-GET http://localhost:8080/student/allStudentsCount
+GET {{host}}/student/allStudentsCount
 Accept: application/json
 
 ### GET average age of all students
-GET http://localhost:8080/student/avgStudentsAge
+GET {{host}}/student/avgStudentsAge
 Accept: application/json
 
 ### GET students that were added last
-GET http://localhost:8080/student/lastStudents?count=20
+GET {{host}}/student/lastStudents?count=2
 Accept: application/json
 
 ### GET avatars (using pagination)
-GET http://localhost:8080/avatar
+GET {{host}}/avatar
 Accept: application/json
 
 ### GET a student by ID
-GET http://localhost:8080/student/6
+GET {{host}}/student/60
+Accept: application/json
+
+### GET a faculty by ID
+GET {{host}}/faculty/5
+Accept: application/json
+
+### GET the port
+GET {{host}}/getPort
 Accept: application/json
 
 ### Send a form with the text and file fields
-PATCH http://localhost:8080/student/6/avatar
+PATCH {{host}}/student/11/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary

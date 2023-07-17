@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
@@ -31,6 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
+    Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     public StudentServiceImpl(final StudentRepository studentRepository,
@@ -48,6 +51,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDtoOut create(StudentDtoIn studentDtoIn) {
+        logger.info("Was invoked method for creating a Student");
+
         return studentMapper.toDto(
                 studentRepository.save(
                         studentMapper.toEntity(studentDtoIn)
@@ -57,6 +62,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDtoOut get(Long id) {
+        logger.info("Was invoked method for getting the Student with id = {}", id);
+
         return studentRepository
                 .findById(id)
                 .map(studentMapper::toDto)
@@ -65,6 +72,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDtoOut update(Long id, StudentDtoIn studentDtoIn) {
+        logger.info("Was invoked method for updating the Student with id = {}", id);
+
         return studentRepository
                 .findById(id)
                 .map(oldStudent -> {
@@ -77,6 +86,9 @@ public class StudentServiceImpl implements StudentService {
                                                     .orElseThrow(() -> new FacultyNotFoundException(facultyId))
                                     )
                             );
+
+                    logger.warn("The Student with id = {} was successfully updated", id);
+
                     return studentMapper.toDto(studentRepository.save(oldStudent));
                 })
                 .orElseThrow(() -> new StudentNotFoundException(id));
@@ -84,15 +96,23 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDtoOut delete(Long id) {
+        logger.info("Was invoked method for deleting the Student with id = {}", id);
+
         Student student = studentRepository
                 .findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
+
         studentRepository.delete(student);
+
+        logger.warn("The Student with id = {} was successfully deleted", id);
+
         return studentMapper.toDto(student);
     }
 
     @Override
     public List<StudentDtoOut> findAll(@Nullable Integer age) {
+        logger.info("Was invoked method for finding all the Students or the Students with age = {}", age);
+
         return Optional.ofNullable(age)
                 .map(studentRepository::findAllByAge)
                 .orElseGet(studentRepository::findAll)
@@ -103,6 +123,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDtoOut> findByAgeBetween(Integer ageFrom, Integer ageTo) {
+        logger.info("Was invoked method for finding all the Students with age between {} and {}", ageFrom, ageTo);
+
         return studentRepository
                 .findAllByAgeBetween(ageFrom, ageTo)
                 .stream()
@@ -112,6 +134,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public FacultyDtoOut getFacultyForStudent(Long id) {
+        logger.info("Was invoked method for getting the Faculty info for the Student with id = {}", id);
+
         return studentRepository
                 .findById(id)
                 .map(Student::getFaculty)
@@ -121,27 +145,38 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDtoOut uploadAvatar(Long id, MultipartFile file) {
+        logger.info("Was invoked method for uploading an Avatar for the Student with id = {}", id);
+
         Student student = studentRepository
                 .findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
         Avatar avatar = avatarService.create(student, file);
         student.setAvatar(avatar);
+
+        logger.warn("Avatar for the Student with id = {} was successfully uploaded", id);
+
         return studentMapper.toDto(student);
     }
 
     @Override
     public int countAllStudentsInTheSchool() {
+        logger.info("Was invoked method for counting all the Students in the School");
+
         return studentRepository.countAllStudentsInTheSchool();
     }
 
     @Override
     public double getAverageAgeOfStudents() {
+        logger.info("Was invoked method for getting an average age of all the Students in the School");
+
         return studentRepository.getAverageAgeOfStudents();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<StudentDtoOut> getLastStudents(int count) {
+        logger.info("Was invoked method for getting {} last added Students to the School", count);
+
         return studentRepository.getLastStudents(Pageable.ofSize(count))
                 .stream()
                 .map(studentMapper::toDto)
