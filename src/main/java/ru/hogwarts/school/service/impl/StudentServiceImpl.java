@@ -183,4 +183,15 @@ public class StudentServiceImpl implements StudentService {
                 .toList();
     }
 
+    @Override
+    public List<String> filterStudentsByNameStartsWith(String letter) {
+        return studentRepository.findAll()
+                .stream()
+                .map(Student::getName)
+                .filter(name -> name.substring(0, 1).equalsIgnoreCase(letter))
+                .map(String::toUpperCase)
+                .sorted()
+                .toList();
+    }
+
 }

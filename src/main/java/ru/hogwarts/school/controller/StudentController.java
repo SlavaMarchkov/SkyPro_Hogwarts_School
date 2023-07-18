@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.FacultyDtoOut;
@@ -84,6 +85,12 @@ public class StudentController {
             @RequestParam(value = "count", required = false, defaultValue = "5") int count
     ) {
         return studentService.getLastStudents(Math.abs(count));
+    }
+
+    @GetMapping(path = "filterByName")
+    public ResponseEntity<List<String>> filterStudentsByNameStartsWith(@RequestParam(value = "startsWith") String startsWith) {
+        List<String> filteredStudents = studentService.filterStudentsByNameStartsWith(startsWith);
+        return ResponseEntity.ok(filteredStudents);
     }
 
 }
