@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.stream.Stream;
+
 @RestController
 @Tag(name = "Контроллер по работе с портом")
 public class InfoController {
@@ -15,6 +17,21 @@ public class InfoController {
     @GetMapping(path = "getPort")
     public int getPort() {
         return port;
+    }
+
+    @GetMapping
+    public String checkStreamIterator() {
+        long before = System.currentTimeMillis();
+        int sum = calcSum();
+        long after = System.currentTimeMillis();
+        return "Sum: " + sum + "; Time: " + (after - before) + "ms";
+    }
+
+    private int calcSum() {
+        return Stream.iterate(1, a -> a + 1)
+                .parallel()
+                .limit(1_000_000)
+                .reduce(0, Integer::sum);
     }
 
 }
