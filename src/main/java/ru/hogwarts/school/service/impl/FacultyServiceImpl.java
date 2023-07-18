@@ -127,4 +127,14 @@ public class FacultyServiceImpl implements FacultyService {
                 .toList();
     }
 
+    @Override
+    public String getTheLongestFacultyName() {
+        return facultyRepository.findAll()
+                .stream()
+                .sorted((f1, f2) -> Integer.compare(f2.getName().length(), f1.getName().length()))
+                .map(Faculty::getName)
+                .findFirst()
+                .toString();
+    }
+
 }

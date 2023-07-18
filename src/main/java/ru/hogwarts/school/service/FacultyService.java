@@ -24,4 +24,6 @@ public interface FacultyService {
 
     List<StudentDtoOut> getFacultyStudents(Long id);
 
+    String getTheLongestFacultyName();
+
 }

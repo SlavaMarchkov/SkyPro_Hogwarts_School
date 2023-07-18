@@ -67,3 +67,7 @@ Content-Type: image/jpeg
 ### GET students with name starting with letter
 GET {{host}}/student/filterByName?startsWith=a
 Accept: application/json
+
+### GET the longest faculty name
+GET {{host}}/faculty/longestFacultyName
+Accept: application/json
