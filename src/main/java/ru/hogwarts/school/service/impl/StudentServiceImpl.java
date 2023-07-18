@@ -194,4 +194,13 @@ public class StudentServiceImpl implements StudentService {
                 .toList();
     }
 
+    @Override
+    public double getAverageAgeOfStudentsByStreamAPI() {
+        return studentRepository.findAll()
+                .stream()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
+
 }

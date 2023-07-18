@@ -93,4 +93,10 @@ public class StudentController {
         return ResponseEntity.ok(filteredStudents);
     }
 
+    @GetMapping(path = "averageAgeOfStudents")
+    public ResponseEntity<Double> getAverageAgeOfStudentsByStreamAPI() {
+        double averageAge = studentService.getAverageAgeOfStudentsByStreamAPI();
+        return ResponseEntity.ok(averageAge);
+    }
+
 }

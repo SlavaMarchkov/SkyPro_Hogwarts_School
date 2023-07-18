@@ -29,6 +29,10 @@ Accept: application/json
 GET {{host}}/student/avgStudentsAge
 Accept: application/json
 
+### GET average age of all students using Stream API
+GET {{host}}/student/averageAgeOfStudents
+Accept: application/json
+
 ### GET students that were added last
 GET {{host}}/student/lastStudents?count=2
 Accept: application/json
@@ -62,3 +66,4 @@ Content-Type: image/jpeg
 
 ### GET students with name starting with letter
 GET {{host}}/student/filterByName?startsWith=a
+Accept: application/json

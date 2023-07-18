@@ -34,4 +34,6 @@ public interface StudentService {
 
     List<String> filterStudentsByNameStartsWith(String letter);
 
+    double getAverageAgeOfStudentsByStreamAPI();
+
 }
