@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.dto.FacultyDtoIn;
 import ru.hogwarts.school.dto.FacultyDtoOut;
@@ -57,6 +58,12 @@ public class FacultyController {
     @GetMapping(path = "{id}/students")
     public List<StudentDtoOut> getFacultyStudents(@PathVariable(name = "id") Long id) {
         return facultyService.getFacultyStudents(id);
+    }
+
+    @GetMapping(path = "longestFacultyName")
+    public ResponseEntity<String> getTheLongestFacultyName() {
+        String facultyName = facultyService.getTheLongestFacultyName();
+        return ResponseEntity.ok(facultyName);
     }
 
 }

@@ -32,4 +32,8 @@ public interface StudentService {
 
     List<StudentDtoOut> getLastStudents(int count);
 
+    List<String> filterStudentsByNameStartsWith(String letter);
+
+    double getAverageAgeOfStudentsByStreamAPI();
+
 }
