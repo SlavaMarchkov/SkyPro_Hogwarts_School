@@ -33,8 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
-    private final Object monitor = new Object();
-    Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     public StudentServiceImpl(final StudentRepository studentRepository,
@@ -263,9 +262,12 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    private void printStudentNameSync(String name) {
-        synchronized (monitor) {
+    private synchronized void printStudentNameSync(String name) {
+        try {
+            Thread.sleep(3000);
             logger.info(name);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
         }
     }
 
