@@ -71,3 +71,6 @@ Accept: application/json
 ### GET the longest faculty name
 GET {{host}}/faculty/longestFacultyName
 Accept: application/json
+
+### GET students in parallel threads
+GET {{host}}/student/threads

@@ -203,4 +203,38 @@ public class StudentServiceImpl implements StudentService {
                 .orElse(0.0);
     }
 
+    @Override
+    public void testParallelThreads() {
+        List<String> studentNames = studentRepository
+                .findAll()
+                .stream()
+                .map(Student::getName)
+                .limit(6)
+                .toList();
+
+        logger.info(studentNames.toString());
+
+        printStudentName(studentNames.get(0));
+        printStudentName(studentNames.get(1));
+
+        new Thread(() -> {
+            printStudentName(studentNames.get(2));
+            printStudentName(studentNames.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(studentNames.get(4));
+            printStudentName(studentNames.get(5));
+        }).start();
+    }
+
+    private void printStudentName(String name) {
+        try {
+            Thread.sleep(3000);
+            logger.info(name);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
