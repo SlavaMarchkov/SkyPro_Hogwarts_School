@@ -33,6 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
+    private final Object monitor = new Object();
     Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
@@ -228,12 +229,43 @@ public class StudentServiceImpl implements StudentService {
         }).start();
     }
 
+    @Override
+    public void testSynchronizedThreads() {
+        List<String> studentNames = studentRepository
+                .findAll()
+                .stream()
+                .map(Student::getName)
+                .limit(6)
+                .toList();
+
+        logger.info(studentNames.toString());
+
+        printStudentNameSync(studentNames.get(0));
+        printStudentNameSync(studentNames.get(1));
+
+        new Thread(() -> {
+            printStudentNameSync(studentNames.get(2));
+            printStudentNameSync(studentNames.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentNameSync(studentNames.get(4));
+            printStudentNameSync(studentNames.get(5));
+        }).start();
+    }
+
     private void printStudentName(String name) {
         try {
             Thread.sleep(3000);
             logger.info(name);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException();
+        }
+    }
+
+    private void printStudentNameSync(String name) {
+        synchronized (monitor) {
+            logger.info(name);
         }
     }
 

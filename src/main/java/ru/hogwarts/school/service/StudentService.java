@@ -38,4 +38,6 @@ public interface StudentService {
 
     void testParallelThreads();
 
+    void testSynchronizedThreads();
+
 }

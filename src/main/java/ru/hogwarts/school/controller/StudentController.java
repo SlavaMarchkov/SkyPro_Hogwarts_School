@@ -104,4 +104,9 @@ public class StudentController {
         studentService.testParallelThreads();
     }
 
+    @GetMapping(path = "sync-threads")
+    public void testSynchronizedThreads() {
+        studentService.testSynchronizedThreads();
+    }
+
 }
