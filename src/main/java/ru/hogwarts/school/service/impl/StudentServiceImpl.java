@@ -242,15 +242,25 @@ public class StudentServiceImpl implements StudentService {
         printStudentNameSync(studentNames.get(0));
         printStudentNameSync(studentNames.get(1));
 
-        new Thread(() -> {
+        Thread thread1 = new Thread(() -> {
             printStudentNameSync(studentNames.get(2));
             printStudentNameSync(studentNames.get(3));
-        }).start();
+        });
 
-        new Thread(() -> {
+        Thread thread2 = new Thread(() -> {
             printStudentNameSync(studentNames.get(4));
             printStudentNameSync(studentNames.get(5));
-        }).start();
+        });
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void printStudentName(String name) {
@@ -262,12 +272,14 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    private synchronized void printStudentNameSync(String name) {
-        try {
-            Thread.sleep(3000);
-            logger.info(name);
-        } catch (InterruptedException e) {
-            throw new RuntimeException();
+    private void printStudentNameSync(String name) {
+        synchronized (this) {
+            try {
+                Thread.sleep(3000);
+                logger.info(name);
+            } catch (InterruptedException e) {
+                throw new RuntimeException();
+            }
         }
     }
 
