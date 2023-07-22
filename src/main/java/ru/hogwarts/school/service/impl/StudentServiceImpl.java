@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
-    Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     public StudentServiceImpl(final StudentRepository studentRepository,
@@ -201,6 +201,86 @@ public class StudentServiceImpl implements StudentService {
                 .mapToDouble(Student::getAge)
                 .average()
                 .orElse(0.0);
+    }
+
+    @Override
+    public void testParallelThreads() {
+        List<String> studentNames = studentRepository
+                .findAll()
+                .stream()
+                .map(Student::getName)
+                .limit(6)
+                .toList();
+
+        logger.info(studentNames.toString());
+
+        printStudentName(studentNames.get(0));
+        printStudentName(studentNames.get(1));
+
+        new Thread(() -> {
+            printStudentName(studentNames.get(2));
+            printStudentName(studentNames.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(studentNames.get(4));
+            printStudentName(studentNames.get(5));
+        }).start();
+    }
+
+    @Override
+    public void testSynchronizedThreads() {
+        List<String> studentNames = studentRepository
+                .findAll()
+                .stream()
+                .map(Student::getName)
+                .limit(6)
+                .toList();
+
+        logger.info(studentNames.toString());
+
+        printStudentNameSync(studentNames.get(0));
+        printStudentNameSync(studentNames.get(1));
+
+        Thread thread1 = new Thread(() -> {
+            printStudentNameSync(studentNames.get(2));
+            printStudentNameSync(studentNames.get(3));
+        });
+
+        Thread thread2 = new Thread(() -> {
+            printStudentNameSync(studentNames.get(4));
+            printStudentNameSync(studentNames.get(5));
+        });
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void printStudentName(String name) {
+        try {
+            Thread.sleep(3000);
+            logger.info(name);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void printStudentNameSync(String name) {
+        synchronized (this) {
+            try {
+                Thread.sleep(3000);
+                logger.info(name);
+            } catch (InterruptedException e) {
+                throw new RuntimeException();
+            }
+        }
     }
 
 }

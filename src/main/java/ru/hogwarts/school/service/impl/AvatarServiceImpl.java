@@ -32,7 +32,7 @@ public class AvatarServiceImpl implements AvatarService {
     private final AvatarRepository avatarRepository;
     private final AvatarMapper avatarMapper;
     private final Path pathToAvatarsDir;
-    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
 
     @Autowired
     public AvatarServiceImpl(final AvatarRepository avatarRepository,

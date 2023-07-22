@@ -99,4 +99,14 @@ public class StudentController {
         return ResponseEntity.ok(averageAge);
     }
 
+    @GetMapping(path = "threads")
+    public void testParallelThreads() {
+        studentService.testParallelThreads();
+    }
+
+    @GetMapping(path = "sync-threads")
+    public void testSynchronizedThreads() {
+        studentService.testSynchronizedThreads();
+    }
+
 }
