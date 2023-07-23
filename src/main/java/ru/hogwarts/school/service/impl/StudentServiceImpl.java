@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final FacultyMapper facultyMapper;
     private final AvatarService avatarService;
-    private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     public StudentServiceImpl(final StudentRepository studentRepository,

@@ -42,7 +42,7 @@ GET {{host}}/avatar
 Accept: application/json
 
 ### GET a student by ID
-GET {{host}}/student/60
+GET {{host}}/student/6
 Accept: application/json
 
 ### GET a faculty by ID

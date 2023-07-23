@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class SchoolExceptionHandler {
 
-    Logger logger = LoggerFactory.getLogger(SchoolExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(SchoolExceptionHandler.class);
 
     @ExceptionHandler(
             {
@@ -20,7 +20,7 @@ public class SchoolExceptionHandler {
             }
     )
     public ResponseEntity<String> handleNotFound(RuntimeException exception) {
-        logger.error(exception.getMessage());
+        logger.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
@@ -28,6 +28,7 @@ public class SchoolExceptionHandler {
 
     @ExceptionHandler(AvatarProcessingException.class)
     public ResponseEntity<String> handleInternalServerError() {
+        logger.error("Exception AvatarProcessingException was thrown");
         return ResponseEntity.internalServerError().build();
     }
 

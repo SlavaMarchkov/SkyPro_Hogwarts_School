@@ -26,7 +26,7 @@ public class FacultyServiceImpl implements FacultyService {
     private final StudentRepository studentRepository;
     private final FacultyMapper facultyMapper;
     private final StudentMapper studentMapper;
-    private final Logger logger = LoggerFactory.getLogger(FacultyServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacultyServiceImpl.class);
 
     @Autowired
     public FacultyServiceImpl(final FacultyRepository facultyRepository,
