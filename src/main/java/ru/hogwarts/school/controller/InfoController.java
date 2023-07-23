@@ -11,8 +11,11 @@ import java.util.stream.Stream;
 @Tag(name = "Контроллер по работе с портом")
 public class InfoController {
 
-    @Value("${server.port}")
-    private int port;
+    private final int port;
+
+    public InfoController(@Value("${server.port}") int port) {
+        this.port = port;
+    }
 
     @GetMapping(path = "getPort")
     public int getPort() {
