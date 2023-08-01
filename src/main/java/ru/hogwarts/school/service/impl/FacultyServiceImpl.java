@@ -16,6 +16,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,10 +132,9 @@ public class FacultyServiceImpl implements FacultyService {
     public String getTheLongestFacultyName() {
         return facultyRepository.findAll()
                 .stream()
-                .sorted((f1, f2) -> Integer.compare(f2.getName().length(), f1.getName().length()))
                 .map(Faculty::getName)
-                .findFirst()
-                .toString();
+                .max(Comparator.comparing(String::length))
+                .orElse("");
     }
 
 }

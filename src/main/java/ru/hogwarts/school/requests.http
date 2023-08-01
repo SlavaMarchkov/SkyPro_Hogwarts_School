@@ -30,7 +30,7 @@ GET {{host}}/student/avgStudentsAge
 Accept: application/json
 
 ### GET average age of all students using Stream API
-GET {{host}}/student/averageAgeOfStudents
+GET {{host}}/student/average-age-of-students
 Accept: application/json
 
 ### GET students that were added last
@@ -65,11 +65,11 @@ Content-Type: image/jpeg
 --WebAppBoundary
 
 ### GET students with name starting with letter
-GET {{host}}/student/filterByName?startsWith=a
+GET {{host}}/student/name-starts-with-letter?letter=a
 Accept: application/json
 
 ### GET the longest faculty name
-GET {{host}}/faculty/longestFacultyName
+GET {{host}}/faculty/longest-name
 Accept: application/json
 
 ### GET students' names in parallel threads

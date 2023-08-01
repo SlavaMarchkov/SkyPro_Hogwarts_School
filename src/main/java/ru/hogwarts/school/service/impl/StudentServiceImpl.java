@@ -189,8 +189,8 @@ public class StudentServiceImpl implements StudentService {
                 .stream()
                 .map(Student::getName)
                 .filter(name -> name.substring(0, 1).equalsIgnoreCase(letter))
-                .map(String::toUpperCase)
                 .sorted()
+                .map(String::toUpperCase)
                 .toList();
     }
 
