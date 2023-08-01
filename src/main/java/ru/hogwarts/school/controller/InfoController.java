@@ -27,10 +27,22 @@ public class InfoController {
         long before = System.currentTimeMillis();
         int sum = calcSum();
         long after = System.currentTimeMillis();
-        return "Sum: " + sum + "; Time: " + (after - before) + "ms";
+
+        long beforeImpr = System.currentTimeMillis();
+        int sumImpr = calcSumImpr();
+        long afterImpr = System.currentTimeMillis();
+
+        return "Sum: " + sum + "; Time: " + (after - before) + "ms | " +
+                "SumImpr: " + sumImpr + "; Time: " + (afterImpr - beforeImpr) + "ms";
     }
 
     private int calcSum() {
+        return Stream.iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, Integer::sum);
+    }
+
+    private int calcSumImpr() {
         return Stream.iterate(1, a -> a + 1)
                 .parallel()
                 .limit(1_000_000)

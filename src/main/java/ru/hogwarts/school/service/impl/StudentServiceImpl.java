@@ -189,8 +189,8 @@ public class StudentServiceImpl implements StudentService {
                 .stream()
                 .map(Student::getName)
                 .filter(name -> name.substring(0, 1).equalsIgnoreCase(letter))
-                .map(String::toUpperCase)
                 .sorted()
+                .map(String::toUpperCase)
                 .toList();
     }
 
@@ -272,15 +272,8 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    private void printStudentNameSync(String name) {
-        synchronized (this) {
-            try {
-                Thread.sleep(3000);
-                logger.info(name);
-            } catch (InterruptedException e) {
-                throw new RuntimeException();
-            }
-        }
+    private synchronized void printStudentNameSync(String name) {
+        printStudentName(name);
     }
 
 }

@@ -87,13 +87,13 @@ public class StudentController {
         return studentService.getLastStudents(Math.abs(count));
     }
 
-    @GetMapping(path = "filterByName")
-    public ResponseEntity<List<String>> filterStudentsByNameStartsWith(@RequestParam(value = "startsWith") String startsWith) {
-        List<String> filteredStudents = studentService.filterStudentsByNameStartsWith(startsWith);
+    @GetMapping(path = "name-starts-with-letter")
+    public ResponseEntity<List<String>> filterStudentsByNameStartsWith(@RequestParam(value = "letter") String letter) {
+        List<String> filteredStudents = studentService.filterStudentsByNameStartsWith(letter);
         return ResponseEntity.ok(filteredStudents);
     }
 
-    @GetMapping(path = "averageAgeOfStudents")
+    @GetMapping(path = "average-age-of-students")
     public ResponseEntity<Double> getAverageAgeOfStudentsByStreamAPI() {
         double averageAge = studentService.getAverageAgeOfStudentsByStreamAPI();
         return ResponseEntity.ok(averageAge);
