@@ -272,15 +272,8 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    private void printStudentNameSync(String name) {
-        synchronized (this) {
-            try {
-                Thread.sleep(3000);
-                logger.info(name);
-            } catch (InterruptedException e) {
-                throw new RuntimeException();
-            }
-        }
+    private synchronized void printStudentNameSync(String name) {
+        printStudentName(name);
     }
 
 }
