@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
                 .map(oldStudent -> {
                     oldStudent.setName(studentDtoIn.getName());
                     oldStudent.setAge(studentDtoIn.getAge());
-                    Optional.of(studentDtoIn.getFacultyId())
+                    Optional.ofNullable(studentDtoIn.getFacultyId())
                             .ifPresent(facultyId ->
                                     oldStudent.setFaculty(
                                             facultyRepository.findById(facultyId)

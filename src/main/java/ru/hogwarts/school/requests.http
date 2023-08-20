@@ -42,7 +42,7 @@ GET {{host}}/avatar
 Accept: application/json
 
 ### GET a student by ID
-GET {{host}}/student/6
+GET {{host}}/student/4
 Accept: application/json
 
 ### GET a faculty by ID
@@ -54,7 +54,7 @@ GET {{host}}/getPort
 Accept: application/json
 
 ### Send a form with the text and file fields
-PATCH {{host}}/student/11/avatar
+PATCH {{host}}/student/4/avatar
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
