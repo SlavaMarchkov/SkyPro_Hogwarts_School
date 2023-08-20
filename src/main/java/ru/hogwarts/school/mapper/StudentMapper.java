@@ -56,7 +56,7 @@ public class StudentMapper {
         student.setAge(studentDtoIn.getAge());
         student.setName(studentDtoIn.getName());
 
-        Optional.of(studentDtoIn.getFacultyId())
+        Optional.ofNullable(studentDtoIn.getFacultyId())
                 .ifPresent(facultyId ->
                         student.setFaculty(
                                 facultyRepository.findById(facultyId)
